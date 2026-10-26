@@ -30,6 +30,9 @@ ontodev_valve test/valve_output/biolink/table.tsv test/valve_output/biolink/biol
 ```
 
 ### Test LinkML validation
+TODO: The --index-slot argument no longer exists in the new version of linkml. Is it needed below? What's the equivalent?
+Note that it may be a typo, since it is a valid argument to linkml-convert (see below).
+
 ```shell
 # Validate TSV
 linkml-validate --schema test/linkml_input/personinfo/personinfo.yaml --target-class Person --index-slot id test/valve_output/personinfo/data/Person.tsv
@@ -37,7 +40,7 @@ linkml-validate --schema test/linkml_input/personinfo/personinfo.yaml --target-c
 linkml-validate --schema test/linkml_input/personinfo/personinfo.yaml --target-class ProcedureConcept --index-slot id test/valve_output/personinfo/data/ProcedureConcept.tsv
 ```
 
-LinkML conversion for validating JSON
+#### LinkML conversion for validating JSON
 ```shell
 # Convert TSV to JSON
 linkml-convert --schema test/linkml_input/personinfo/personinfo.yaml --target-class Person --index-slot id test/valve_output/personinfo/data/Person.tsv -o test/valve_output/personinfo/data/Person.json
