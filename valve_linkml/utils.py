@@ -2,6 +2,7 @@ import csv
 import math
 import random
 
+
 def write_dicts2tsv(filepath: str, rendered_data: list, headers: list) -> None:
     with open(filepath, "w") as file:
         writer = csv.DictWriter(file, delimiter="\t", fieldnames=headers, lineterminator="\n")

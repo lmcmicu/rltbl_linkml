@@ -1,15 +1,39 @@
-# VALVE - LinkML
+# Relatable - LinkML
 Convert [LinkML](https://github.com/linkml/linkml) schemas + data to [VALVE](https://github.com/ontodev/valve.py) tables
 
 ## Requirements
+* [Relatable](https://github.com/rltbl/relatable)
 * [LinkML](requirements.txt)
-* [VALVE.py v0.2.1](https://github.com/ontodev/valve.py/releases/tag/v0.2.1) (requires Python 3.8) or [VALVE.rs v0.2.1](https://github.com/ontodev/valve.rs/releases/tag/v0.2.1)
 
-## Setup
-`python3 -m pip install .`
+## Relatable setup
 
-## Usage
-`python3 -m valve_linkml.linkml2valve <linkml-yaml-schema-path> -o <output-directory> -d <linkml-yaml-data-directory>`
+TODO.
+
+## LinkML Setup
+
+1. Clone the repository.
+
+        git clone git@github.com:lmcmicu/rltbl_linkml.git
+
+2. Navigate to the just-cloned repository's root directory.
+
+        cd rltbl_linkml
+
+3. Create a python virtual environment in the root directory of the repository.
+
+        python3 -m venv _venv
+
+4. Activate the newly-created virtual environment.
+
+        . _venv/bin/activate
+
+5. Install the python requirements to the virtual environment (this might take a few minutes).
+
+        pip3 install -r requirements.txt
+
+## Show usage
+
+    python3 -m valve_linkml.linkml2valve --help
 
 ### Test schema conversion
 ```shell
