@@ -1,0 +1,35 @@
+name: Run tests.
+
+on:
+  push:
+    branches:
+      - '*'
+env:
+  CARGO_TERM_COLOR: always
+jobs:
+  run-tests:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Install needed packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install postgresql postgresql-contrib postgresql-client build-essential csvtool python3 python3-pip
+      - name: Start the PostgreSQL database server
+        run: |
+          sudo systemctl start postgresql.service
+      - name: Create the rltbl_db database
+        run: |
+          sudo su - postgres -c "createuser runner"
+          sudo su - postgres -c "createdb -O runner rltbl_db"
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Create virtual environment with needed dependencies
+        run: |
+          python3 -m venv .venv
+          source .venv/bin/activate
+          pip3 install -r requirements.txt
+      - name: Run tests
+        run: |
+          source .venv/bin/activate
+          make test_linkml2valve
+          # TODO: Add more targets to test.
