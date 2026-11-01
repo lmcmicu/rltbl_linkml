@@ -26,8 +26,6 @@ from .valve_schema import (
 from .utils import write_dicts2tsv
 from .data_generator import generate_schema_data
 
-LOGGER = logging.getLogger("linkml2valve")
-
 # VALVE default constants
 DEFAULT_DATATYPE = VALVE_SCHEMA["defaults"]["datatype"]
 DEFAULT_PRIMARY_KEY = VALVE_SCHEMA["defaults"]["primary_key"]
@@ -39,6 +37,24 @@ ENUM_MEANING_DATATYPE = "CURIE"
 
 # TODO change this to local var used in datatype mapping
 SCHEMA_DEFAULT_RANGE = DEFAULT_DATATYPE
+
+# Configure logging, using the environment variable `LINKML2VALVE_LOGGING_LEVEL`, if set, to
+# configure the logging level (default: warning).
+logging.basicConfig(
+    format="%(asctime)s %(levelname)s %(message)s", datefmt="%Y-%m-%d %H:%M:%S", encoding="utf-8"
+)
+LOGGER = logging.getLogger("linkml2valve")
+logging_level = os.environ.get("LINKML2VALVE_LOGGING_LEVEL", "").casefold()
+if logging_level == "debug":
+    LOGGER.setLevel(logging.DEBUG)
+elif logging_level == "info":
+    LOGGER.setLevel(logging.INFO)
+else:
+    LOGGER.setLevel(logging.WARNING)
+    if logging_level not in ["warn", "warning", "error", "critical", "notset", ""]:
+        LOGGER.warning(
+            f"Ignoring invalid logging level: '{logging_level}'. Default level is WARNING"
+        )
 
 
 def main():
@@ -56,7 +72,7 @@ def main():
         "-d",
         "--data-dir",
         dest="DATA_DIR",
-        help="Directory of LinkML YAML data files. These are NOT schemas!",
+        help="Directory of LinkML YAML data files. These are NOT schemas! (not yet implemented)",
     )
     parser.add_argument(
         "-g",
@@ -64,20 +80,14 @@ def main():
         dest="GENERATE_DATA",
         help="Boolean option to generate data files from the schema.",
     )
-    parser.add_argument(
-        "-v", "--verbose", action="store_true", dest="VERBOSE", help="Boolean option log verbosely."
-    )
     args = parser.parse_args()
 
-    # Validate args
-    # check if output dir exists
+    # Check if output dir exists:
     if not os.path.isdir(args.OUTPUT_DIR):
         raise ValueError(f"Output directory '{args.OUTPUT_DIR}' does not exist.")
 
     # Run
-    linkml2valve(
-        args.YAML_SCHEMA_PATH, args.OUTPUT_DIR, args.DATA_DIR, args.GENERATE_DATA, args.VERBOSE
-    )
+    linkml2valve(args.YAML_SCHEMA_PATH, args.OUTPUT_DIR, args.DATA_DIR, args.GENERATE_DATA)
 
 
 def linkml2valve(
@@ -85,11 +95,7 @@ def linkml2valve(
     output_dir: str,
     data_dir: str = None,
     generate_data: bool = False,
-    log_verbosely: bool = False,
 ):
-    if log_verbosely:
-        LOGGER.setLevel(level=logging.DEBUG)
-
     # Map LinkML schema to VALVE tables
     mapped_valve_schema: dict = map_schema(yaml_schema_path, output_dir)
     schema_tables = mapped_valve_schema["schema_tables"]

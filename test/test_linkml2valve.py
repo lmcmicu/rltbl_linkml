@@ -107,7 +107,10 @@ if __name__ == "__main__":
     output_dir = os.path.join(base_dir, "valve_output", "personinfo")
 
     mapped_schema_tables = valve_linkml.linkml2valve.linkml2valve(
-        input_file, output_dir, data_dir=None, generate_data=True, log_verbosely=True
+        input_file,
+        output_dir,
+        data_dir=None,
+        generate_data=True,
     )
 
     test_schema_mapping(input_file, mapped_schema_tables)
