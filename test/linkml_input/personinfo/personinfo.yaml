@@ -1,3 +1,9 @@
+# The LinkML doc says that "Note that currently serializing the person objects won’t work, as the
+# Person class is too nested to be serialized as TSV"
+# (see: https://linkml.io/linkml/data/csvs.html#container-objects).
+# Is that an insurmountable problem? Not sure but I haven't succeeded yet ...
+# The doc mentions a tool called json-flattener. Can we use this?
+
 id: https://w3id.org/linkml/examples/personinfo
 name: personinfo
 description: |-
@@ -30,7 +36,6 @@ emit_prefixes:
   - skos
 
 classes:
-
   NamedThing:
     description: >-
       A generic grouping for any identifiable entity
@@ -39,9 +44,9 @@ classes:
       - name
       - description
       - image
+    # What does close_mappings mean? There is nothing in the docs about this.
     close_mappings:
      - schema:Thing
-
   Person:
     is_a: NamedThing
     description: >-
@@ -65,7 +70,6 @@ classes:
         recommended: true
     in_subset:
       - basic_subset
-  
   HasAliases:
     description: >-
       A mixin applied to any class that can have aliases/alternateNames
@@ -75,8 +79,6 @@ classes:
         multivalued: true
         exact_mappings:
           - schema:alternateName
-
-
   Organization:
     description: >-
       An organization such as a company or university
@@ -88,21 +90,18 @@ classes:
       - mission_statement
       - founding_date
       - founding_location
-
   Place:
     mixins:
       - HasAliases
     slots:
       - id
       - name
-      
   Address:
     class_uri: schema:PostalAddress
     slots:
       - street
       - city
       - postal_code
-
   Event:
     slots:
       - started_at_time
@@ -111,24 +110,18 @@ classes:
       - is_current
     close_mappings:
       - schema:Event
-
   Concept:
     is_a: NamedThing
-
   DiagnosisConcept:
     is_a: Concept
-
   ProcedureConcept:
     is_a: Concept
-      
-
   Relationship:
     slots:
       - started_at_time
       - ended_at_time
       - related_to
       - type
-
   FamilialRelationship:
     is_a: Relationship
     slot_usage:
@@ -138,24 +131,20 @@ classes:
       related_to:
         range: Person
         required: true
-
   EmploymentEvent:
     is_a: Event
     slots:
       - employed_at
-
   MedicalEvent:
     is_a: Event
     slots:
       - in_location
       - diagnosis
       - procedure
-
   WithLocation:
     mixin: true
     slots:
       - in_location
-
   # TODO: annotate that this is a container/root class
   Container:
     tree_root: true
@@ -199,9 +188,13 @@ slots:
   in_location:
     range: Place
   current_address:
-    description: >-
-      The address at which a person currently lives
-    range: Address
+    range: integer
+    minimum_value: 0
+    maximum_value: 99999
+  # current_address:
+  #   description: >-
+  #     The address at which a person currently lives
+  #   range: Address
   age_in_years:
     range: integer
     minimum_value: 0
@@ -227,11 +220,9 @@ slots:
   procedure:
     range: ProcedureConcept
     inlined: true
-
   ended_at_time:
     slot_uri: prov:endedAtTime
     range: date
-
   persons:
     range: Person
     inlined: true
@@ -242,7 +233,7 @@ slots:
     inlined_as_list: true
     inlined: true
     multivalued: true
-    
+
 enums:
   FamilialRelationshipType:
     permissible_values:
